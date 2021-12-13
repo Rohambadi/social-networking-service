@@ -12,7 +12,7 @@ from common.decorators import ajax_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
-@login_required()
+@login_required
 def image_post(request):
     if request.method == 'POST':
         form = ImagePostForm(data=request.POST, files=request.FILES)
@@ -59,7 +59,7 @@ def image_post(request):
         return render(request, 'images/image/edit.html', {'photo_form': photo_form, 'desc_form': desc_form})'''
 
 
-@login_required()
+@login_required
 def image_create(request):
     if request.method == 'POST':
         form = ImageCreateForm(data=request.POST)
@@ -92,12 +92,11 @@ def image_like(request):
     if image_id and action:
         try:
             image = Image.objects.get(id=image_id)
-            if action is 'like':
+            if action == 'like':
                 image.users_like.add(request.user)
             else:
                 image.users_like.remove(request.user)
             return JsonResponse({'status': 'ok'})
-
         except:
             pass
     return JsonResponse({'status': 'error'})
@@ -113,10 +112,11 @@ def image_list(request):
     except PageNotAnInteger:
         images = paginator.page(1)
     except EmptyPage:
-        if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return HttpResponse('')
         images = paginator.page(paginator.num_pages)
-    if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return render(request, 'images/image/list_ajax.html',
                       {'section': 'images', 'images': images})
     return render(request, 'images/image/list.html',
