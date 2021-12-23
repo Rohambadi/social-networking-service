@@ -141,3 +141,9 @@ AUTHENTICATION_BACKENDS = [
 ]
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '180769007613-3mjfo9521vgvlkuae2325774m125i1la.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+
+from django.urls import reverse_lazy
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: reverse_lazy('user_detail', args=[u.username])
+}
